@@ -93,3 +93,9 @@ export default function Home() {
     </main>
   );
 }
+
+// export default function Chat(){
+
+// return "hi"
+// }
+
