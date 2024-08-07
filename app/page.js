@@ -94,8 +94,8 @@ export default function Home() {
   );
 }
 
-// export default function Chat(){
+export default function Chat(){
 
-// return "hi"
-// }
+return "hi"
+}
 
