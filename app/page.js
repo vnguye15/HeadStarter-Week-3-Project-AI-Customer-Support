@@ -11,19 +11,58 @@ export default function ChatInterface() {
       role: "assistant",
       content: "Hi! It's Stocks for Noobs assistant. How can I help today?"
     },
-    {
-      role: "user",
-      content: "Hello"
-    }
+    // {
+    //   role: "user",
+    //   content: "Hello"
+    // }
   ]);
-  const [input, setInput] = useState('');
+  const [message, setMessage] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter(); // To handle navigation
 
-  const handleSend = () => {
-    if (input.trim()) {
-      setMessages([...messages, { role: 'user', content: input }]);
-      setInput('');
+
+  const sendMessage = async () => {
+    setMessage('')
+    setMessages((messages) => [
+      ...messages,
+      { role: 'user', content: message},
+      { role: 'assistant', content: ''},
+    ])
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([...messages, {role: 'user', content: message}]),
+    }).then( async (res) => {
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+
+      let result = ''
+      return reader.read().then(function processText({done, value}) {
+        if (done) {
+          return result
+        }
+        const text = decoder.decode(value || new Int8Array(), {stream:true})
+        setMessages((messages) => {
+          let lastMsg = messages[messages.length - 1]
+          let otherMsgs = messages.slice(0, messages.length - 1)
+          return [
+            ...otherMsgs,
+            {
+              ...lastMsg,
+              content: lastMsg.content + text
+            },
+          ]
+        })
+        return reader.read().then(processText)
+      })
+    })
+  }
+  // WHIT TODO ADD BACKEND API CALL FOR AI RESPONSE
+  const handleSend = async () => {
+    if (message.trim()) {
+      sendMessage()
     }
   };
 
@@ -125,8 +164,8 @@ export default function ChatInterface() {
           label="Send a message"
           variant="outlined"
           fullWidth
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSend()}
         />
         <IconButton
