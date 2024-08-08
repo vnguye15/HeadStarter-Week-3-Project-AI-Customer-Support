@@ -1,103 +1,142 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import React, { useState } from 'react';
+import { Box, Stack, TextField, IconButton, Avatar, Typography, AppBar, Toolbar, Button, Menu, MenuItem } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import { useRouter } from 'next/navigation'; // Use `next/navigation` instead of `next/router`
+
+export default function ChatInterface() {
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content: "Hi! It's Stocks for Noobs assistant. How can I help today?"
+    },
+    {
+      role: "user",
+      content: "Hello"
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const router = useRouter(); // To handle navigation
+
+  const handleSend = () => {
+    if (input.trim()) {
+      setMessages([...messages, { role: 'user', content: input }]);
+      setInput('');
+    }
+  };
+
+  const handleHomeClick = () => {
+    router.push('/'); // Redirect to the home page
+  };
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = () => {
+    setAnchorEl(null);
+    // Handle logout logic here
+    console.log('Logout clicked');
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Box
+      width="100vw"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+    >
+      {/* Navigation Bar */}
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Customer Support Chat
+          </Typography>
+          <Button color="inherit" onClick={handleHomeClick}>
+            Home
+          </Button>
+          <IconButton color="inherit" onClick={handleAvatarClick}>
+            <Avatar />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      {/* Chat Messages */}
+      <Box
+        flexGrow={1}
+        overflow="auto"
+        p={2}
+        bgcolor="#f5f5f5"
+      >
+        <Stack spacing={2}>
+          {messages.map((message, index) => (
+            <Box
+              key={index}
+              display="flex"
+              justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end'}
+            >
+              {message.role === 'assistant' && (
+                <Avatar sx={{ bgcolor: 'black', mr: 2 }}>
+                  AI
+                </Avatar>
+              )}
+              <Box
+                bgcolor={message.role === 'assistant' ? 'primary.main' : 'secondary.main'}
+                color="white"
+                borderRadius={16}
+                p={2}
+                maxWidth="70%"
+              >
+                <Typography variant="body1">
+                  {message.content}
+                </Typography>
+              </Box>
+              {message.role === 'user' && (
+                <Avatar sx={{ bgcolor: 'gray', ml: 2 }}>
+                  U
+                </Avatar>
+              )}
+            </Box>
+          ))}
+        </Stack>
+      </Box>
+
+      {/* Input Field */}
+      <Box
+        display="flex"
+        p={2}
+        bgcolor="background.paper"
+        boxShadow="0 -2px 10px rgba(0,0,0,0.1)"
+      >
+        <TextField
+          label="Send a message"
+          variant="outlined"
+          fullWidth
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+        <IconButton
+          color="primary"
+          onClick={handleSend}
+          sx={{ ml: 2 }}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <SendIcon />
+        </IconButton>
+      </Box>
+    </Box>
   );
 }
-
-export default function Chat(){
-
-return "hi"
-}
-
-/*adding lines of code here to test commit #2 */
-
