@@ -5,6 +5,8 @@ import { Box, Stack, TextField, IconButton, Avatar, Typography, AppBar, Toolbar,
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from 'next/navigation'; // Use `next/navigation` instead of `next/router`
 
+
+// comment to test commit #3 (viet)
 export default function ChatInterface() {
   const [messages, setMessages] = useState([
     {
