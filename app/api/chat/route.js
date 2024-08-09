@@ -7,10 +7,6 @@ export async function POST(req) {
     
     const openai = new OpenAI();
     const data = await req.json()
-    
-    data.forEach(element => {
-        console.log(element)
-    });
 
     const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
@@ -42,35 +38,6 @@ export async function POST(req) {
             }
         },
     })
-    console.log("AI msg: " + completion.choices[0].message.content)
+
     return new NextResponse(stream);
 }
-
-// curl -X POST localhost:3000/api/chat -d '{"message": "Hello to AI"}'
-
-// {
-//     "message": {
-//         "id":"chatcmpl-9u3NhebZAD1LegM78BL6BQaDPZbYF",
-//         "object":"chat.completion",
-//         "created":1723146393,
-//         "model":"gpt-3.5-turbo-0125",
-//         "choices":[
-//             {
-//                 "index":0,
-//                 "message":{
-//                     "role":"assistant",
-//                     "content":"Hello! I am an AI digital assistant. You can call me anything you like. How can I assist you today?",
-//                     "refusal":null
-//                 },
-//                 "logprobs":null,
-//                 "finish_reason":"stop"
-//             }
-//         ],
-//         "usage":{
-//             "prompt_tokens":15,
-//             "completion_tokens":24,
-//             "total_tokens":39
-//         },
-//         "system_fingerprint":null
-//     }
-// }

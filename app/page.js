@@ -11,10 +11,6 @@ export default function ChatInterface() {
       role: "assistant",
       content: "Hi! It's Stocks for Noobs assistant. How can I help today?"
     },
-    // {
-    //   role: "user",
-    //   content: "Hello"
-    // }
   ]);
   const [message, setMessage] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -59,7 +55,7 @@ export default function ChatInterface() {
       })
     })
   }
-  // WHIT TODO ADD BACKEND API CALL FOR AI RESPONSE
+
   const handleSend = async () => {
     if (message.trim()) {
       sendMessage()
