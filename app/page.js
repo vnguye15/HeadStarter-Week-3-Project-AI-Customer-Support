@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import { Box, Stack, TextField, IconButton, Avatar, Typography, AppBar, Toolbar, Button, Menu, MenuItem } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from 'next/navigation'; // Use `next/navigation` instead of `next/router`
+import "./globals.css"
 
+// comment to test commit #3 (viet)
 export default function ChatInterface() {
   const [messages, setMessages] = useState([
     {
@@ -79,9 +81,10 @@ export default function ChatInterface() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  // Start of CSS (Editing ChatInterface)
   return (
     <Box
+      className="background"
       width="100vw"
       height="100vh"
       display="flex"
@@ -175,3 +178,63 @@ export default function ChatInterface() {
     </Box>
   );
 }
+
+
+// This function below serves as our form validation
+function AccountModal({ isOpen, onClose }) {
+  const [isCreatingAccount, setIsCreatingAccount] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validate and handle form submission here
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!email) errors.email = 'Email is required';
+    if (!/\S+@\S+\.\S+/.test(email)) errors.email = 'Email is invalid';
+    if (!password) errors.password = 'Password is required';
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  return isOpen ? (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button onClick={onClose}>Close</button>
+        <h2>{isCreatingAccount ? 'Create Account' : 'Log In'}</h2>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Insert email"
+            />
+            {errors.email && <span className="error">{errors.email}</span>}
+          </div>
+          <div>
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Insert password"
+            />
+            {errors.password && <span className="error">{errors.password}</span>}
+          </div>
+          <button type="submit">{isCreatingAccount ? 'Sign Up' : 'Log In'}</button>
+        </form>
+        <button onClick={() => setIsCreatingAccount(!isCreatingAccount)}>
+          {isCreatingAccount ? 'Already have an account? Log In' : 'Need an account? Create one'}
+        </button>
+      </div>
+    </div>
+  ) : null;
+}
+
+export {AccountModal}; 
