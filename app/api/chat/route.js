@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import {OpenAI} from "openai";
+import { OpenAI } from "openai";
 
-// export async function GET(request) {
-//     return NextResponse.json({message: "GET response"})
-// }
+const systemPrompt = "You are the 'Stocks for Noobs Assistant,' an AI chatbot designed to help beginners navigate the stock market. Your role is to provide clear, simple explanations on how to get started with investing in stocks, answer common questions about stock market concepts, and offer guidance on basic strategies for beginners. You should be patient, informative, and focused, ensuring that your advice is accessible to those with little to no experience. If a question is unrelated to stocks or too advanced, politely guide the user back to beginner-friendly stock market topics."
 
 export async function POST(req) {
-    const systemPrompt = "You are the 'Stocks for Noobs Assistant,' an AI chatbot designed to help beginners navigate the stock market. Your role is to provide clear, simple explanations on how to get started with investing in stocks, answer common questions about stock market concepts, and offer guidance on basic strategies for beginners. You should be patient, informative, and focused, ensuring that your advice is accessible to those with little to no experience. If a question is unrelated to stocks or too advanced, politely guide the user back to beginner-friendly stock market topics."
-
+    
     const openai = new OpenAI();
     const data = await req.json()
-    // console.log('api/chat/route.js:13 data: ' + data);
+    
+    data.forEach(element => {
+        console.log(element)
+    });
 
     const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
@@ -19,15 +19,6 @@ export async function POST(req) {
                 role: "system", content: systemPrompt
             },
             ...data,
-            // {
-            //     role: "user",
-            //     content: [
-            //         {
-            //             type: "text",
-            //             text: data.message
-            //         },
-            //     ],
-            // },
         ],
         stream: true,
         max_tokens: 1000,
@@ -51,10 +42,8 @@ export async function POST(req) {
             }
         },
     })
-    // console.log("AI msg: " + completion.choices[0].message.content)
-    console.log('api/chat/route.js:55 completion.choices[0].message.content: ' + completion.choices[0].message.content);
+    console.log("AI msg: " + completion.choices[0].message.content)
     return new NextResponse(stream);
-    // return NextResponse.json({message: "200 OK"})
 }
 
 // curl -X POST localhost:3000/api/chat -d '{"message": "Hello to AI"}'
