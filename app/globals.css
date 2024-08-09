@@ -5,3 +5,9 @@
   margin: 0;
 }
 
+
+/* New background class */
+.background{
+  background-color: #25272C;
+  min-height: 100vh;
+}
