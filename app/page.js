@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Box, Stack, TextField, IconButton, Avatar, Typography, AppBar, Toolbar, Button, Menu, MenuItem } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from 'next/navigation'; // Use `next/navigation` instead of `next/router`
-
+import "./globals.css"
 
 // comment to test commit #3 (viet)
 export default function ChatInterface() {
@@ -49,6 +49,7 @@ export default function ChatInterface() {
   // Start of CSS (Editing ChatInterface)
   return (
     <Box
+      className="background"
       width="100vw"
       height="100vh"
       display="flex"
