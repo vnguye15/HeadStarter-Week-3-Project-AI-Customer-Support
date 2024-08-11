@@ -72,7 +72,7 @@ export default function ChatInterface(userImgUrl) {
   };
 
   const handleHomeClick = () => {
-    router.push('/'); // Redirect to the home page
+    router.push('/'); // Redirect to the landing page
   };
 
   const handleAvatarClick = (event) => {
