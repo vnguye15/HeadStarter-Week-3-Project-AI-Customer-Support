@@ -1,9 +1,8 @@
-'use client';
-
 import React from 'react';
 import { Box, Typography, AppBar, Toolbar } from '@mui/material';
 import "./globals.css"
 import Link from 'next/link';
+import { SignIn, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 export default function HomePage() {
   return (
@@ -29,8 +28,12 @@ export default function HomePage() {
               display={'flex'}
               gap={2}
             >
-              <Link href={'#'} style={{textDecoration: 'none', color: 'white'}}>Sign Up</Link>
-              <Link href={'#'} style={{textDecoration: 'none', color: 'white'}}>Sign In</Link>
+              <SignUpButton>
+                <button className='auth-button'>Sign Up</button>
+              </SignUpButton>
+              <SignInButton forceRedirectUrl='/chat'>
+                <button className='auth-button'>Sign In</button>
+              </SignInButton>
             </Box>
           </Box>
           
