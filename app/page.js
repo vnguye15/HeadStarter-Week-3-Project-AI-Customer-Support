@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, AppBar, Toolbar } from '@mui/material';
 import "./globals.css"
 import Link from 'next/link';
-import { SignIn, SignInButton, SignUpButton } from '@clerk/nextjs';
+import { SignInButton, SignUpButton } from '@clerk/nextjs';
 
 export default function HomePage() {
   return (
