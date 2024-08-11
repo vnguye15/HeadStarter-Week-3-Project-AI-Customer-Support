@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Box, Stack, TextField, IconButton, Avatar, Typography, AppBar, Toolbar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { useRouter } from 'next/navigation'; // Use `next/navigation` instead of `next/router`
 import "../app/globals.css"
 import {
   SignedOut,
@@ -22,8 +21,6 @@ export default function ChatInterface(userImgUrl) {
     },
   ]);
   const [message, setMessage] = useState('');
-  const [anchorEl, setAnchorEl] = useState(null);
-  const router = useRouter(); // To handle navigation
 
 
   const sendMessage = async () => {
@@ -71,23 +68,6 @@ export default function ChatInterface(userImgUrl) {
     }
   };
 
-  const handleHomeClick = () => {
-    router.push('/'); // Redirect to the landing page
-  };
-
-  const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleLogout = () => {
-    setAnchorEl(null);
-    // Handle logout logic here
-    console.log('Logout clicked');
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   // Start of HTML (Editing ChatInterface)
   return (
     <>
