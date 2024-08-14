@@ -1,240 +1,59 @@
-'use client';
-
-import React, { useState } from 'react';
-import { Box, Stack, TextField, IconButton, Avatar, Typography, AppBar, Toolbar, Button, Menu, MenuItem } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import { useRouter } from 'next/navigation'; // Use `next/navigation` instead of `next/router`
+import React from 'react';
+import { Box, Typography, AppBar, Toolbar } from '@mui/material';
 import "./globals.css"
+import Link from 'next/link';
+import { SignInButton, SignUpButton } from '@clerk/nextjs';
 
-// comment to test commit #3 (viet)
-export default function ChatInterface() {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content: "Hi! It's Stocks for Noobs assistant. How can I help today?"
-    },
-  ]);
-  const [message, setMessage] = useState('');
-  const [anchorEl, setAnchorEl] = useState(null);
-  const router = useRouter(); // To handle navigation
-
-
-  const sendMessage = async () => {
-    setMessage('')
-    setMessages((messages) => [
-      ...messages,
-      { role: 'user', content: message},
-      { role: 'assistant', content: ''},
-    ])
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify([...messages, {role: 'user', content: message}]),
-    }).then( async (res) => {
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-
-      let result = ''
-      return reader.read().then(function processText({done, value}) {
-        if (done) {
-          return result
-        }
-        const text = decoder.decode(value || new Int8Array(), {stream:true})
-        setMessages((messages) => {
-          let lastMsg = messages[messages.length - 1]
-          let otherMsgs = messages.slice(0, messages.length - 1)
-          return [
-            ...otherMsgs,
-            {
-              ...lastMsg,
-              content: lastMsg.content + text
-            },
-          ]
-        })
-        return reader.read().then(processText)
-      })
-    })
-  }
-
-  const handleSend = async () => {
-    if (message.trim()) {
-      sendMessage()
-    }
-  };
-
-  const handleHomeClick = () => {
-    router.push('/'); // Redirect to the home page
-  };
-
-  const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleLogout = () => {
-    setAnchorEl(null);
-    // Handle logout logic here
-    console.log('Logout clicked');
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  // Start of CSS (Editing ChatInterface)
+export default function HomePage() {
   return (
     <Box
-      className="background"
-      width="100vw"
-      height="100vh"
-      display="flex"
-      flexDirection="column"
+      width={'100vw'}
+      height={'100vh'}
+      display={'flex'}
+      flexDirection={'column'}
     >
-      {/* Navigation Bar */}
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Customer Support Chat
-          </Typography>
-          <Button color="inherit" onClick={handleHomeClick}>
-            Home
-          </Button>
-          <IconButton color="inherit" onClick={handleAvatarClick}>
-            <Avatar />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
+        <Toolbar sx={{backgroundColor: 'black'}}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            width={'100%'}
+            padding={'0px 60px'}
           >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </Menu>
+            <Typography variant="h6">
+              Stocks For Noobs
+            </Typography>
+            <Box
+              display={'flex'}
+              gap={2}
+            >
+              <SignUpButton>
+                <button className='auth-button'>Sign Up</button>
+              </SignUpButton>
+              <SignInButton forceRedirectUrl='/chat'>
+                <button className='auth-button'>Sign In</button>
+              </SignInButton>
+            </Box>
+          </Box>
+          
+          
         </Toolbar>
       </AppBar>
-
-      {/* Chat Messages */}
       <Box
-        flexGrow={1}
-        overflow="auto"
-        p={2}
-        bgcolor="#f5f5f5"
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'center'}
+        alignItems={'center'}
+        flex={1}
       >
-        <Stack spacing={2}>
-          {messages.map((message, index) => (
-            <Box
-              key={index}
-              display="flex"
-              justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end'}
-            >
-              {message.role === 'assistant' && (
-                <Avatar sx={{ bgcolor: 'black', mr: 2 }}>
-                  AI
-                </Avatar>
-              )}
-              <Box
-                bgcolor={message.role === 'assistant' ? 'primary.main' : 'secondary.main'}
-                color="white"
-                borderRadius={16}
-                p={2}
-                maxWidth="70%"
-              >
-                <Typography variant="body1">
-                  {message.content}
-                </Typography>
-              </Box>
-              {message.role === 'user' && (
-                <Avatar sx={{ bgcolor: 'gray', ml: 2 }}>
-                  U
-                </Avatar>
-              )}
-            </Box>
-          ))}
-        </Stack>
-      </Box>
-
-      {/* Input Field */}
-      <Box
-        display="flex"
-        p={2}
-        bgcolor="background.paper"
-        boxShadow="0 -2px 10px rgba(0,0,0,0.1)"
-      >
-        <TextField
-          label="Send a message"
-          variant="outlined"
-          fullWidth
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-        />
-        <IconButton
-          color="primary"
-          onClick={handleSend}
-          sx={{ ml: 2 }}
-        >
-          <SendIcon />
-        </IconButton>
+        <Typography variant='h1' textAlign={'center'} width={'60%'}>
+          Welcome to Stocks For Noobs Chatbot Assistant. 
+        </Typography>
+        <Typography variant='h5' textAlign={'center'}>
+          Please sign in to proceed.
+        </Typography>
       </Box>
     </Box>
-  );
+  )
 }
-
-
-// This function below serves as our form validation
-function AccountModal({ isOpen, onClose }) {
-  const [isCreatingAccount, setIsCreatingAccount] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({});
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Validate and handle form submission here
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    if (!email) errors.email = 'Email is required';
-    if (!/\S+@\S+\.\S+/.test(email)) errors.email = 'Email is invalid';
-    if (!password) errors.password = 'Password is required';
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  return isOpen ? (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button onClick={onClose}>Close</button>
-        <h2>{isCreatingAccount ? 'Create Account' : 'Log In'}</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Insert email"
-            />
-            {errors.email && <span className="error">{errors.email}</span>}
-          </div>
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Insert password"
-            />
-            {errors.password && <span className="error">{errors.password}</span>}
-          </div>
-          <button type="submit">{isCreatingAccount ? 'Sign Up' : 'Log In'}</button>
-        </form>
-        <button onClick={() => setIsCreatingAccount(!isCreatingAccount)}>
-          {isCreatingAccount ? 'Already have an account? Log In' : 'Need an account? Create one'}
-        </button>
-      </div>
-    </div>
-  ) : null;
-}
-
-export {AccountModal}; 
